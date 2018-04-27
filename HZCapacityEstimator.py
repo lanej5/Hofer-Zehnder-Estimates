@@ -13,11 +13,12 @@ class HZCapacityEstimator:
     def __init__(self, n, m):
         if n >=1:
             self.n = n
-        else: n=1
+        else: self.n=1
         if m >=3:
             self.m = m
-        else: m=3
+        else: self.m=3
         
+        # define matrix J, used frequently in the algorithm.
         Z = np.zeros((n,n))
         I = np.identity(n)
         self.J = np.block([[Z,I],[-I,Z]])
