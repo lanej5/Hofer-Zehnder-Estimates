@@ -96,6 +96,9 @@ class HZCapacityEstimator:
         return (self.A2n(x) + np.flip(self.A2n(np.flip(x,axis=1)),axis=1))/(self.m**2)
     
     def randomStartingPoint(self,epsilon):
+        # Starting point for gradient descent needs to be in the constraint submanifold
+        # where f(x) = 0 and np.sum(x,axis = 1,keepdims=True) = 0
+
         c = 0.
         while c < epsilon:
             x = 4*(0.5-np.random.rand(2*self.n,self.m))
@@ -105,7 +108,8 @@ class HZCapacityEstimator:
         if c > 0:
             return x/sqrt(c)
         else:
-            return -x/sqrt(-c)
+            # reversing the order of columns in x changes the sign of f(x)+1
+            return np.flip(x,axis = -1)/sqrt(-c)
 
     def estimate(self, iterations = 10, epsilon = 10.**(-5)):
         # Estimates the Hofer-Zehnder capacity of the convex body using 
@@ -121,7 +125,6 @@ class HZCapacityEstimator:
 
             k = k + 1
             print("At k =", k, ", F(x) =", self.F(x))
-            if k % 10 == 0: print(k)
 
             # Part 1
 
@@ -140,8 +143,8 @@ class HZCapacityEstimator:
             # Part 3
 
             else:
-                L_max   = self.m * sqrt( 3/fabs( np.sum( y_hat* self.A2n(y_hat))))/2
-                h_kLmax = np.sum(-y_hat * self.dF(x+L_max*y_hat))
+                L_max   = self.m * sqrt( 3/fabs( np.sum( y_hat* self.A2n(y_hat) ) ))/2
+                h_kLmax = np.sum(-y_hat * self.dF(x + L_max*y_hat))
                 h_k0    = np.sum(y_hat*y_hat)
 
                 if h_kLmax >= 0:
@@ -153,17 +156,18 @@ class HZCapacityEstimator:
                 
                 while carryOn:
 
-                    c_L0  = (L_0**2)/(self.m**2)*np.sum(y_hat * self.A2n(y_hat)) + 1
+                    c_L0  = (L_0**2)*np.sum(y_hat * self.A2n(y_hat))/(self.m**2) + 1
                     x_L0  = x + (L_0 * y_hat)
                     x_ML0 = x_L0/sqrt(c_L0)
                     del_1 = self.F(x) - self.F(x_L0)
                     del_2 = self.F(x) - self.F(x_ML0)
 
+                    # print(4*del_2-del_1)
+
                     if 4*del_2 <= del_1:
-                        
                         L_0 = L_0/2
                     else:
-                        carryOn2 = False
+                        carryOn  = False
                         x        = x_ML0
 
         print("The estimated Hofer-Zhender capacity of the unit ball is ", self.F(x))
