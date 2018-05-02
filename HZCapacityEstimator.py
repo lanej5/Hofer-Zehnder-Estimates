@@ -7,6 +7,8 @@ from math import sqrt, fabs
 # the unit ball, which is pi.
 #
 # Goal: adapt to estimate the capacity of any convex (rational) polytope
+#
+# https://ch.mathworks.com/help/optim/ug/constrained-nonlinear-optimization-algorithms.html
 
 class HZCapacityEstimator:
     
@@ -23,6 +25,8 @@ class HZCapacityEstimator:
         I = np.identity(n)
         self.J = np.block([[Z,I],[-I,Z]])
 
+        return
+
     def H(self,x):  
         # Assume x is a vector in R^2n
         return np.sum(x*x)
@@ -38,6 +42,7 @@ class HZCapacityEstimator:
 
     def G(self,y):
         # Assume y is a vector in R^2n
+        # G(y) is the Legendre transform of H(x)
         x = self.dG(y)   
         return np.sum(y*x) - self.H(x)
 
@@ -86,14 +91,14 @@ class HZCapacityEstimator:
     def f(self,x):
         # Compute f(x) 
         # (see paper sec. 2.1 equation (2.5))
-
-        return np.sum(x*self.A2n(x))/(self.m**2) - 1
+        f = np.sum(x*self.A2n(x))/(self.m**2.) - 1.
+        return f
 
     def df(self,x):
         # Compute the product (A2n + A2n^T)x /m^2
         # (see G-J sec. 2.1 equation (2.11))
 
-        return (self.A2n(x) + np.flip(self.A2n(np.flip(x,axis=1)),axis=1))/(self.m**2)
+        return (self.A2n(x) - np.flip(self.A2n(np.flip(x,axis=1)),axis=1))/(self.m**2.)
     
     def randomStartingPoint(self,epsilon):
         # Starting point for gradient descent needs to be in the constraint submanifold
@@ -101,17 +106,17 @@ class HZCapacityEstimator:
 
         c = 0.
         while c < epsilon:
-            x = 4*(0.5-np.random.rand(2*self.n,self.m))
+            x = 0.5-np.random.rand(2*self.n,self.m)
             x = self.proj(x)
-            c = self.f(x)+1
+            c = self.f(x)+1.
         
-        if c > 0:
+        if c > 0.:
             return x/sqrt(c)
         else:
             # reversing the order of columns in x changes the sign of f(x)+1
             return np.flip(x,axis = -1)/sqrt(-c)
 
-    def estimate(self, iterations = 10, epsilon = 10.**(-5)):
+    def estimate(self, iterations = 10, epsilon = 10.**(-12)):
         # Estimates the Hofer-Zehnder capacity of the convex body using 
         # projected gradients to solve the convex constrained optimization 
         # problem (see the thesis of GJ for details).
@@ -119,12 +124,13 @@ class HZCapacityEstimator:
         k = 0
         
         # create random x_0 in the space M_m
+        np.random.seed(0)
         x = self.randomStartingPoint(epsilon)
         
         while k < iterations:
 
             k = k + 1
-            print("At k =", k, ", F(x) =", self.F(x))
+            print("At k =", k, ", F(x) =", self.F(x),", f(x) =", self.f(x))
 
             # Part 1
 
@@ -135,42 +141,42 @@ class HZCapacityEstimator:
 
             # Part 2
 
-            if np.sum(y_hat*y_hat) < epsilon**2:
+            if np.sum(y_hat*y_hat) < epsilon:
                 print("Early stop at iteration ", k)
-                print("The estimated Hofer-Zhender capacity of the unit ball is ", self.F(x))
+                print("The estimated Hofer-Zehnder capacity of the unit ball is ", 2*self.F(x))
                 return 
 
             # Part 3
 
             else:
-                L_max   = self.m * sqrt( 3/fabs( np.sum( y_hat* self.A2n(y_hat) ) ))/2
+                L_max   = self.m * sqrt( 3./fabs( np.sum( y_hat* self.A2n(y_hat) ) ))/2.
                 h_kLmax = np.sum(-y_hat * self.dF(x + L_max*y_hat))
                 h_k0    = np.sum(y_hat*y_hat)
 
                 if h_kLmax >= 0:
-                    L_0  = L_max
+                    L_0 = L_max
+
                 else:
-                    L_0  = L_max * h_k0/(h_k0-h_kLmax)
+                    L_0 = L_max * h_k0/(h_k0-h_kLmax)
 
                 carryOn = True
                 
                 while carryOn:
 
-                    c_L0  = (L_0**2)*np.sum(y_hat * self.A2n(y_hat))/(self.m**2) + 1
-                    x_L0  = x + (L_0 * y_hat)
+                    c_L0  = self.f(L_0 * y_hat) + 2.
+                    x_L0  = x + L_0 * y_hat
                     x_ML0 = x_L0/sqrt(c_L0)
+
                     del_1 = self.F(x) - self.F(x_L0)
                     del_2 = self.F(x) - self.F(x_ML0)
 
-                    # print(4*del_2-del_1)
-
-                    if 4*del_2 <= del_1:
-                        L_0 = L_0/2
+                    if 4.*del_2 <= del_1:
+                        L_0 = L_0/2.
                     else:
                         carryOn  = False
                         x        = x_ML0
 
-        print("The estimated Hofer-Zhender capacity of the unit ball is ", self.F(x))
+        print("The estimated Hofer-Zehnder capacity of the unit ball is ", 2*self.F(x))
         # self.plot(x)
         return 
 
