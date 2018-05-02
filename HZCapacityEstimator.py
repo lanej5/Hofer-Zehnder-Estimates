@@ -30,7 +30,6 @@ class HZCapacityEstimator:
 
     def LegendreTransformEquation(self,x):
         # the root x of this system of nonlinear equations equals dG(y)
-        print(x.shape)
         return self.dH(x) - self.y
 
     def dG(self,y):
@@ -39,7 +38,8 @@ class HZCapacityEstimator:
         if self.dg is None:
             # if dG has not been input by the user, solve dH(x)=y numerically.
             self.y = y
-            sol = optimize.root(self.LegendreTransformEquation, [.1,.1], method='hybr')
+            x0 = np.full(2*self.n,.1)
+            sol = optimize.root(self.LegendreTransformEquation, x0, method='hybr')
             return sol.x
         else: 
             return self.dg(y)
