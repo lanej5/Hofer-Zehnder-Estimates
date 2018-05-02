@@ -8,9 +8,9 @@ The contents of the repository are currently as follows:
 
 ## HZCapacityEstimator.py 
 
-Defines a class that estimates the Hofer-Zehnder capacity of a unit-ball in R^2n. The algorithm is a vectorized version of the constrained gradient-descent algorithm provided in [1].  In the algorithm, loops are approximated by piecewise linear paths with m linear segments.
+Defines a class that estimates the Hofer-Zehnder capacity of a unit-ball in R^2n. The algorithm is a vectorized python version of the constrained gradient-descent algorithm provided in [1].  The constraints are non-linear and the algorithm uses a version of projected gradients that solves the local KKT conditions.  In the algorithm, smooth loops in R^2n are approximated by piecewise linear paths with m linear segments.
 
-Usage:
+Usage of ```HZCapacityEstimator.py``` is demonstrated in the notebook ```Examples.ipynb```
 
 - After importing ```HZCapacityEstimator```, initialize an instance of the class by calling
 
@@ -25,11 +25,9 @@ where ```n``` and ```m``` are as described above (n is half the desired dimensio
 Optional arguments: ```iterations``` is the maximum number of gradient-descent steps you wish to take, and ```epsilon``` is the tolerance for early stopping.
 
 
-## To do
+## To do 
 
-- 
-
-
+- Expand the algorithm in ```HZCapacityEstimator.py``` to estimate capacities of convex polytopes.
 
 
 ## References
