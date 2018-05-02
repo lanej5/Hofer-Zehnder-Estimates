@@ -4,8 +4,6 @@ This repository contains development of earlier work by [1] and the Symplectic C
 
 Hofer-Zehder capacities of convex sets in R^2n are an example of an invariant of symplectic manifolds (another example is Gromov width). These invariants are generally very difficult to compute or even estimate, and there are many open conjectures, even about the Hofer-Zehder capacity.
 
-The contents of the repository are currently as follows:
-
 ## HZCapacityEstimator.py 
 
 Defines a class that estimates the Hofer-Zehnder capacity of a strictly convex open subset of R^2n. The algorithm is a vectorized numpy implementation of the constrained gradient-descent algorithm provided in [1].  The constraints are non-linear and the algorithm uses a version of projected gradients that solves the local KKT conditions.  In the algorithm, smooth loops in R^2n are approximated by piecewise linear paths with m linear segments.
@@ -42,7 +40,7 @@ Once you have defined an estimator object, as above, you can run the gradient-de
 
 #### Returns
 
-The function returns the estimated HZ- capacity.
+The function returns the estimated HZ-capacity.
 
 
 ## BallHZCapacityEstimator.py 

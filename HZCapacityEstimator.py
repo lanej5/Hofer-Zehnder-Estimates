@@ -1,6 +1,7 @@
 # HZCapacityEstimator class
 
 import numpy as np
+from scipy import optimize
 from math import sqrt, fabs
 
 # currently, hardcoded to estimate the Hofer-Zehnder capacity of 
@@ -8,13 +9,20 @@ from math import sqrt, fabs
 
 class HZCapacityEstimator:
     
-    def __init__(self, n, m):
-        if n >=1:
-            self.n = n
+    def __init__(self, n, m, H, dH, dG = None ):
+        if n >=1: self.n = n
         else: self.n=1
-        if m >=3:
-            self.m = m
-        else: self.m=3
+        if m >=3: self.m = m
+        else: self.m = 3
+
+        self.H  = H
+        self.dH = dH
+
+        if dG is None:
+            self.dg = None
+            print("Gradient of the Legendre transform of H will be estimated numerically.")
+        else:
+            self.dg = dG
         
         # define the matrix J, used frequently in the algorithm.
         Z = np.zeros((self.n,self.n))
@@ -23,18 +31,21 @@ class HZCapacityEstimator:
 
         return
 
-    def H(self,x):  
-        # Assume x is a vector in R^2n
-        return np.sum(x*x)
-
-    def dH(self,x):
-        # Assume x is a vector in R^2n
-        return 2*x
+    def LegendreTransformEquation(self,x):
+        # the root x of this system of nonlinear equations equals dG(y)
+        print(x.shape)
+        return self.dH(x) - self.y
 
     def dG(self,y):
-        # Assume x is a vector in R^2n
         # Computes dH inverse = dG
-        return y/2
+
+        if self.dg is None:
+            # if dG has not been input by the user, solve dH(x)=y numerically.
+            self.y = y
+            sol = optimize.root(self.LegendreTransformEquation, [.1,.1], method='hybr')
+            return sol.x
+        else: 
+            return self.dg(y)
 
     def G(self,y):
         # Assume y is a vector in R^2n
