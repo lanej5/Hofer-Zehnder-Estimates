@@ -8,26 +8,51 @@ The contents of the repository are currently as follows:
 
 ## HZCapacityEstimator.py 
 
-Defines a class that estimates the Hofer-Zehnder capacity of a unit-ball in R^2n. The algorithm is a vectorized numpy implementation of the constrained gradient-descent algorithm provided in [1].  The constraints are non-linear and the algorithm uses a version of projected gradients that solves the local KKT conditions.  In the algorithm, smooth loops in R^2n are approximated by piecewise linear paths with m linear segments.
+Defines a class that estimates the Hofer-Zehnder capacity of a strictly convex open subset of R^2n. The algorithm is a vectorized numpy implementation of the constrained gradient-descent algorithm provided in [1].  The constraints are non-linear and the algorithm uses a version of projected gradients that solves the local KKT conditions.  In the algorithm, smooth loops in R^2n are approximated by piecewise linear paths with m linear segments.
 
 Usage of ```HZCapacityEstimator.py``` is demonstrated in the notebook ```Examples.ipynb```
 
-- After importing ```HZCapacityEstimator```, initialize an instance of the class by calling
+### Initializing ```HZCapacityEstimator```
 
-```estimator = HZCapacityEstimator(n,m)```
+After importing ```HZCapacityEstimator```, initialize an instance of the class by calling 
 
-where ```n``` and ```m``` are as described above (n is half the desired dimension and m is the number of segments in the PL paths).  Note that m must be at least 3. For a good approximation, we recommend setting m to be approximately 1000.
+```estimator = HZCapacityEstimator(n,m,H)```
 
-- Perform gradient descent by calling the function 
+#### Arguments
 
-```estimator.estimate(iterations = 100, epsilon = 10.**(-12))```
+- ```n``` is half the desired dimension.
 
-Optional arguments: ```iterations``` is the maximum number of gradient-descent steps you wish to take, and ```epsilon``` is the tolerance for early stopping.
+- ```m``` is the number of segments in the PL paths).  Note that m must be at least 3. For a good approximation, we recommend setting m to be approximately 500-1000.
 
+- ```H``` is a function 
+
+### Running the estimator
+
+Once you have defined an estimator object, as above, you can run the gradient-descent algorithm by calling 
+
+```estimator.estimate(iterations = 100, epsilon = 10.**(-12), VOCAL = True)```
+
+#### Arguments
+
+- ```iterations``` this optional argument sets the maximum number of gradient descent steps.
+
+- ```epsilon``` this optional argument is the tolerance for early stopping.
+
+- ```VOCAL``` this optional argument can be used to mute log messages that the algorithm prints to screen. 
+
+#### Returns
+
+The function returns the estimated HZ- capacity.
+
+
+## BallHZCapacityEstimator.py 
+
+Same as ```HZCapacityEstimator.py``` but hardcoded with Hamiltonian H defining the unit ball in R^2n. It is known that the HZ-capacity of a unit ball is pi.
 
 ## To do 
 
-- Expand the algorithm in ```HZCapacityEstimator.py``` to estimate capacities of convex polytopes.
+- Expand the algorithm in ```TropicalHZCapacityEstimator.py``` to estimate capacities of convex polytopes. 
+- Add visualization code.
 
 
 ## References
