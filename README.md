@@ -22,7 +22,11 @@ After importing ```HZCapacityEstimator```, initialize an instance of the class b
 
 - ```m``` is the number of segments in the PL paths).  Note that m must be at least 3. For a good approximation, we recommend setting m to be approximately 500-1000.
 
-- ```H``` is a function 
+- ```H``` is the Hamiltonian function such that the level set H = 1 is the boundary of the convex body. 
+
+- ```dH``` is the gradient of H
+
+- ```dG``` this optional argument is the gradient of the Legendre transform of H. If dG is not entered (e.g. if it is not possible to solve for dG algebraically) then the algorithm will approximate dG numerically. 
 
 ### Running ```HZCapacityEstimator.estimate```
 
@@ -42,10 +46,6 @@ Once you have defined an estimator object, as above, you can run the gradient-de
 
 The function returns the estimated HZ-capacity.
 
-
-## BallHZCapacityEstimator.py 
-
-Same as ```HZCapacityEstimator.py``` but hardcoded with Hamiltonian H defining the unit ball in R^2n. It is known that the HZ-capacity of a unit ball is pi.
 
 ## To do 
 
