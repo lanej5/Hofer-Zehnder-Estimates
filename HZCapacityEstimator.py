@@ -4,9 +4,6 @@ import numpy as np
 from scipy import optimize
 from math import sqrt, fabs
 
-# currently, hardcoded to estimate the Hofer-Zehnder capacity of 
-# the unit ball, which is pi.
-
 class HZCapacityEstimator:
     
     def __init__(self, n, m, H, dH, dG = None ):
