@@ -14,7 +14,7 @@ Usage of ```HZCapacityEstimator.py``` is demonstrated in the notebook ```Example
 
 After importing ```HZCapacityEstimator```, initialize an instance of the class by calling 
 
-```estimator = HZCapacityEstimator(n,m,H)```
+```estimator = HZCapacityEstimator(n,m,H,dH,dG = None)```
 
 #### Arguments
 
