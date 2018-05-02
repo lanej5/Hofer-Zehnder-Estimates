@@ -26,7 +26,7 @@ After importing ```HZCapacityEstimator```, initialize an instance of the class b
 
 - ```H``` is a function 
 
-### Running the estimator
+### Running the ```HZCapacityEstimator.estimate```
 
 Once you have defined an estimator object, as above, you can run the gradient-descent algorithm by calling 
 
