@@ -5,10 +5,6 @@ from math import sqrt, fabs
 
 # currently, hardcoded to estimate the Hofer-Zehnder capacity of 
 # the unit ball, which is pi.
-#
-# Goal: adapt to estimate the capacity of any convex (rational) polytope
-#
-# https://ch.mathworks.com/help/optim/ug/constrained-nonlinear-optimization-algorithms.html
 
 class HZCapacityEstimator:
     
@@ -20,7 +16,7 @@ class HZCapacityEstimator:
             self.m = m
         else: self.m=3
         
-        # define matrix J, used frequently in the algorithm.
+        # define the matrix J, used frequently in the algorithm.
         Z = np.zeros((n,n))
         I = np.identity(n)
         self.J = np.block([[Z,I],[-I,Z]])
@@ -116,7 +112,7 @@ class HZCapacityEstimator:
             # reversing the order of columns in x changes the sign of f(x)+1
             return np.flip(x,axis = -1)/sqrt(-c)
 
-    def estimate(self, iterations = 10, epsilon = 10.**(-12)):
+    def estimate(self, iterations = 100, epsilon = 10.**(-12), VOCAL = True):
         # Estimates the Hofer-Zehnder capacity of the convex body using 
         # projected gradients to solve the convex constrained optimization 
         # problem (see the thesis of GJ for details).
@@ -130,7 +126,8 @@ class HZCapacityEstimator:
         while k < iterations:
 
             k = k + 1
-            print("At k =", k, ", F(x) =", self.F(x),", f(x) =", self.f(x))
+            if VOCAL:
+                print("At k =", k, ", F(x) =", self.F(x),", f(x) =", self.f(x))
 
             # Part 1
 
@@ -142,9 +139,10 @@ class HZCapacityEstimator:
             # Part 2
 
             if np.sum(y_hat*y_hat) < epsilon:
-                print("Early stop at iteration ", k)
-                print("The estimated Hofer-Zehnder capacity of the unit ball is ", 2*self.F(x))
-                return 
+                if VOCAL:
+                    print("Early stop at iteration ", k)
+                    print("The estimated Hofer-Zehnder capacity of the unit ball is ", 2*self.F(x))
+                return 2*self.F(x)
 
             # Part 3
 
@@ -176,9 +174,10 @@ class HZCapacityEstimator:
                         carryOn  = False
                         x        = x_ML0
 
-        print("The estimated Hofer-Zehnder capacity of the unit ball is ", 2*self.F(x))
-        # self.plot(x)
-        return 
+        if VOCAL:
+            print("The estimated Hofer-Zehnder capacity of the unit ball is ", 2*self.F(x))
+            # self.plot(x)
+        return 2*self.F(x)
 
     def plot(self,x):
     
