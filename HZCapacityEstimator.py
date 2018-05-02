@@ -17,8 +17,8 @@ class HZCapacityEstimator:
         else: self.m=3
         
         # define the matrix J, used frequently in the algorithm.
-        Z = np.zeros((n,n))
-        I = np.identity(n)
+        Z = np.zeros((self.n,self.n))
+        I = np.identity(self.n)
         self.J = np.block([[Z,I],[-I,Z]])
 
         return
