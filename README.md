@@ -2,7 +2,7 @@
 
 This repository contains development of earlier work by [1] and the Symplectic Capacities group from the Computational Symplectic Topology workshop at Tel-Aviv University and ICERM [[2]](http://www.math.tau.ac.il/~ostrover/Workshop/CST/Workshop-CST.html), of which I was a participant.  Work by the Symplectic Capacities group is available in MATLAB code in the github repo [[3]](https://github.com/itamarr/symp-cap).
 
-Hofer-Zehder capacities of convex sets in R^2n are an example of an invariant of symplectic manifolds (another example is Gromov width). These invariants are generally very difficult to compute or even estimate, and there are many open conjectures, even about the Hofer-Zehder capacity.
+Hofer-Zehnder capacities of convex sets in R^2n are an example of an invariant of symplectic manifolds (another example is Gromov width). These invariants are generally very difficult to compute or even estimate, and there are many open conjectures, even about the Hofer-Zehnder capacity.
 
 ## HZCapacityEstimator.py 
 
