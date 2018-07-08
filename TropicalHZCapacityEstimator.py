@@ -41,13 +41,15 @@ class TropicalHZCapacityEstimator:
         dH[0] = a*(exp(self.t*(x[0]+x[1])) - exp(-self.t*x[0]))
         dH[1] = a*(exp(self.t*(x[0]+x[1])) - exp(-self.t*x[1]))
 
-        return dH - self.y
+        # define the jacobian
+
+        return dH - self.y, jac 
 
     def dG(self,y):
         # Assume x is a vector in R^2
         # Estimates dH inverse = dG using scipy.optimize
         self.y = y
-        sol = optimize.root(self.dH, [.1,.1], method='hybr')
+        sol = optimize.root(self.dH, [.1,.1], method='hybr',jac=True)
 
 
         return sol.x
