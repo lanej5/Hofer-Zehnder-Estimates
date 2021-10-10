@@ -46,13 +46,6 @@ Once you have defined an estimator object, as above, you can run the gradient-de
 
 The function returns the estimated HZ-capacity.
 
-
-## To do 
-
-- Add visualization code.
-- Expand the algorithm in ```TropicalHZCapacityEstimator.py``` to estimate capacities of convex polytopes. 
-
-
 ## References
 
 [1] G\"oing-Jaeschke. Numerical Analysis in Hamiltonian Dynamics. PhD Thesis, ETH Zurich.
